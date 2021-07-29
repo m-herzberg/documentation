@@ -16,12 +16,13 @@ namespace ZOOlanders\YOOessentials\Form\Action;
 use YOOtheme\Config;
 use YOOtheme\Path;
 use ZOOlanders\YOOessentials\Form\Http\FormSubmissionResponse;
+use function YOOtheme\app;
 
 class MyCustomAction implements Action
 {
     public function __construct(Config $config)
     {
-        $config->addFile("customizer.panels.{$this->panel()}", Path::get('../action-panel.json'));
+        $config->addFile("customizer.panels.yooessentials-form-action-custom", Path::get('../action-panel.json'));
     }
 
     public function name() : string
@@ -29,11 +30,22 @@ class MyCustomAction implements Action
       return 'My Custom Action';
     }
 
-    public function panel() : string
+    public function panel() : array
     {
-      return 'yooessentials-form-action-custom';
+      return app()->config->loadFile(Path::get('../action-panel.json'));;
     }
+    
+    public function getConfig(): array
+    {
+		  return $this->config;
+	  }
 
+    public function setConfig(array $config): Action
+    {
+      $this->config = $config;
+      return $this;
+    }
+    
     /**
      * @param FormSubmissionResponse $response
      * @param callable $next
